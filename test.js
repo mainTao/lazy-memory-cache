@@ -21,6 +21,21 @@ test('maxAge expired', async t => {
     })
 })
 
+test('maxAge expired but force', async t => {
+  cache.set('foo', 'bar', {maxAge: 1})
+  return Promise.delay(1100)
+    .then(() => {
+      cache.debug()
+      t.is(cache.get('foo', true), 'bar')
+    })
+})
+
+test('expire method works', t => {
+  cache.set('foo', 'bar', {maxAge: 1})
+  cache.expire('foo')
+  t.is(cache.get('foo'), undefined)
+})
+
 test('maxAge not expired', t => {
   cache.set('foo', 'bar', {maxAge: 1})
   return Promise.delay(800)

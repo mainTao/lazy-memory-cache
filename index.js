@@ -7,11 +7,11 @@ exports.debug = () => {
   console.log(JSON.stringify(cache, ' ', 2))
 }
 
-exports.get = (key) => {
+exports.get = (key, force) => {
   let obj = cache[key]
   if(obj){
-    if(Date.now() > obj.deadline){
-      delete cache[key]
+    if(!force && Date.now() > obj.deadline){
+      return undefined
     }
     else{
       if(obj.getClone){
@@ -53,4 +53,11 @@ exports.set = (key, value, options) => {
 
 exports.delete = (key) => {
   delete cache[key]
+}
+
+exports.expire = (key) => {
+  let obj = cache[key]
+  if(obj){
+    obj.deadline = Date.now() - 1
+  }
 }
